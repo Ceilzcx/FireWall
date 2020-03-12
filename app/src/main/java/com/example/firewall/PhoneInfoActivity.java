@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +33,9 @@ public class PhoneInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_phone_info);
 
         initData();
+
+        Toolbar toolbar = findViewById(R.id.tool_bar_phone_info);
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         RecyclerView recyclerView = findViewById(R.id.recycler_phone_info);
         PhoneInfoAdapter adapter = new PhoneInfoAdapter(infos);
