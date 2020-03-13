@@ -1,4 +1,4 @@
-package com.example.firewall;
+package com.example.firewall.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.firewall.R;
 import com.example.firewall.adapter.PhoneInfoAdapter;
 import com.example.firewall.dao.IpDao;
 

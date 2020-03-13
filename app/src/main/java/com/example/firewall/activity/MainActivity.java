@@ -1,8 +1,10 @@
-package com.example.firewall;
+package com.example.firewall.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.firewall.R;
 
 /**
  * 防火墙主界面
