@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/image_commit"
+        android:icon="@drawable/ic_commit_black"
+        android:title="确认" />
+
+    <item
+        android:id="@+id/image_back"
+        android:icon="@drawable/ic_back_black"
+        android:title="返回" />
+</menu>
