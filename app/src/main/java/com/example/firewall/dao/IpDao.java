@@ -1,4 +1,4 @@
-package com.example.firewall.util;
+package com.example.firewall.dao;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -15,7 +15,7 @@ import java.util.Enumeration;
 /**
  * 获得GPRS和无限网环境的IP
  */
-public class IpUtils {
+public class IpDao {
 
     public static String getIPAddress(Context context) {
         NetworkInfo info = ((ConnectivityManager) context

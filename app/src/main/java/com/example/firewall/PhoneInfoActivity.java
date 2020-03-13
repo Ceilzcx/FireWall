@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firewall.adapter.PhoneInfoAdapter;
-import com.example.firewall.util.IpUtils;
+import com.example.firewall.dao.IpDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,7 @@ public class PhoneInfoActivity extends AppCompatActivity {
             number = "N/A";
         infos.add("手机号码："+number);   //不一定成功
         infos.add("MAC地址："+wifiManager.getConnectionInfo().getMacAddress());
-        infos.add("IP地址："+ IpUtils.getIPAddress(this));
+        infos.add("IP地址："+ IpDao.getIPAddress(this));
     }
 
 }
