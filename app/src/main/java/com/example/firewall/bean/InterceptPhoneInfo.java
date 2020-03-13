@@ -4,7 +4,7 @@ package com.example.firewall.bean;
  * 拦截号码：包括电话号码、拦截类型
  * 存放在SQLite数据库中
  */
-public class InterceptPhone {
+public class InterceptPhoneInfo {
     //定义三种拦截：电话拦截、短信拦截、全部拦截
     public final static int TELE_INTERCEPT = 1;
     public final static int NOTE_INTERCEPT = 2;
@@ -13,7 +13,7 @@ public class InterceptPhone {
     private String number;
     private int type;
 
-    public InterceptPhone(String number, int type){
+    public InterceptPhoneInfo(String number, int type){
         this.number = number;
         this.type = type;
     }
