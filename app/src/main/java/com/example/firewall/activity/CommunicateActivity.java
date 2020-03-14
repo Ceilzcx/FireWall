@@ -76,10 +76,12 @@ public class CommunicateActivity extends AppCompatActivity {
                 dialog.show();
                 break;
             case R.id.add_number_contact:
-                Intent intent = new Intent(CommunicateActivity.this, PhoneContactActivity.class);
-                startActivity(intent);
+                Intent intent1 = new Intent(CommunicateActivity.this, PhoneContactActivity.class);
+                startActivity(intent1);
                 break;
             case R.id.add_number_log:
+                Intent intent2 = new Intent(CommunicateActivity.this, PhoneCallLogActivity.class);
+                startActivity(intent2);
                 break;
         }
         return true;
