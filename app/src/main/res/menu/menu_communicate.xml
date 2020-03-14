@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/add_number_hand" android:title="手动添加号码"/>
+    <item android:id="@+id/add_number_contact" android:title="从联系人中添加"/>
+    <item android:id="@+id/add_number_log" android:title="从通话记录添加"/>
+</menu>

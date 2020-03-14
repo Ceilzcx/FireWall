@@ -13,6 +13,10 @@ public class InterceptPhoneInfo {
     private String number;
     private int type;
 
+    public InterceptPhoneInfo(){
+
+    }
+
     public InterceptPhoneInfo(String number, int type){
         this.number = number;
         this.type = type;
