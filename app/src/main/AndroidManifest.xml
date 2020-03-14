@@ -30,6 +30,7 @@
         <activity android:name=".activity.PhoneContactActivity"/>
         <activity android:name=".activity.MainActivity"/>
         <activity android:name=".activity.PhoneCallLogActivity"/>
+        <service android:name=".service.BlacklistInterceptService"/>
 
     </application>
 

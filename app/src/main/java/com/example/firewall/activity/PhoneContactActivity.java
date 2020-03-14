@@ -1,19 +1,15 @@
 package com.example.firewall.activity;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firewall.R;
 import com.example.firewall.adapter.PhoneContactAdapter;
-import com.example.firewall.dao.PermissionsDao;
+import com.example.firewall.util.PermissionsUtil;
 import com.example.firewall.dao.PhoneContactDao;
 
 /**
@@ -30,7 +26,7 @@ public class PhoneContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mobile_contact);
 
-        PermissionsDao.initPermissions(this, permissions);
+        PermissionsUtil.initPermissions(this, permissions);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_mobile_contact);
         PhoneContactAdapter adapter = new PhoneContactAdapter(PhoneContactDao.queryContactPhoneNumber(this));

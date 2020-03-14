@@ -2,9 +2,11 @@ package com.example.firewall.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.firewall.R;
+import com.example.firewall.service.BlacklistInterceptService;
 
 /**
  * 防火墙主界面
@@ -16,5 +18,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //开启电话拦截服务
+        Intent intent = new Intent(MainActivity.this, BlacklistInterceptService.class);
+        startService(intent);
     }
 }

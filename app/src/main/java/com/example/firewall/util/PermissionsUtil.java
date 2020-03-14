@@ -1,4 +1,4 @@
-package com.example.firewall.dao;
+package com.example.firewall.util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat;
 /**
  * 申请权限,传入要申请的权限和Context
  */
-public class PermissionsDao {
+public class PermissionsUtil {
     private static final int OPEN_SET_REQUEST_CODE = 100;
 
     //调用此方法判断是否拥有权限

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firewall.R;
 import com.example.firewall.adapter.PhoneCallLogAdapter;
-import com.example.firewall.dao.PermissionsDao;
+import com.example.firewall.util.PermissionsUtil;
 import com.example.firewall.dao.PhoneContactDao;
 
 public class PhoneCallLogActivity extends AppCompatActivity {
@@ -21,7 +21,7 @@ public class PhoneCallLogActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mobile_calllog);
 
-        PermissionsDao.initPermissions(this, permissions);
+        PermissionsUtil.initPermissions(this, permissions);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_mobile_calllog);
         PhoneCallLogAdapter adapter = new PhoneCallLogAdapter(PhoneContactDao.getContentCallLog(this));
