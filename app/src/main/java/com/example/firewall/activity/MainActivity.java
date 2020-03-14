@@ -47,5 +47,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        //开启电话拦截服务
+        Intent intent = new Intent(MainActivity.this, BlacklistInterceptService.class);
+        startService(intent);
     }
 }
