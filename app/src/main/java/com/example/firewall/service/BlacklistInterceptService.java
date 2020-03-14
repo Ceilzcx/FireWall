@@ -22,6 +22,7 @@ import java.util.List;
 
 import static com.example.firewall.util.CallUtil.endCall;
 
+
 /**
  *黑名单拦截服务
  *拦截电话，如果号码在黑名单中
@@ -109,6 +110,7 @@ public class BlacklistInterceptService extends Service {
                                             }
 
                                         });
+
                                 endCall();
                             }
                         }
