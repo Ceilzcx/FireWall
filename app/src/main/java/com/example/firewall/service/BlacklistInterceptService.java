@@ -17,12 +17,14 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.android.internal.telephony.ITelephony;
+//import com.android.internal.telephony.ITelephony;
 import com.example.firewall.bean.InterceptPhoneInfo;
 import com.example.firewall.dao.InterceptDao;
 
 import java.lang.reflect.Method;
 import java.util.List;
+
+//import static com.example.firewall.util.CallUtil.endCall;
 
 
 /**
@@ -115,7 +117,7 @@ public class BlacklistInterceptService extends Service {
 
                                         });
 
-                                endCall();
+                                //endCall();
                             }
                         }
                         break;
@@ -150,40 +152,40 @@ public class BlacklistInterceptService extends Service {
         getContentResolver().delete(uri, "number=?", new String[] { number });
     }
 
-    protected void endCall() {
-        // TelephonyManager.endCall(); 1.5版本后，把该方法阉割掉了
-        // 想用该功能，实现方法
-        // ServiceManager.getService();
-        // 反射调用
-
-        try {
-            // 1.class
-            Class clazz = Class.forName("android.os.ServiceManager");
-            // 2. method
-            Method method = clazz.getDeclaredMethod("getService", String.class);
-
-            // 3.obj 不需要 静态方法
-            // 4. 调用
-            IBinder binder = (IBinder) method.invoke(null,
-                    Context.TELEPHONY_SERVICE);
-
-            // 5.aidl
-            ITelephony iTelephony = ITelephony.Stub.asInterface(binder);
-
-            AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            // 先静音处理
-            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-            // 挂断电话
-            iTelephony.endCall();
-            Log.e("4", "挂断电话");
-            // 再恢复正常铃声
-            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
+//    protected void endCall() {
+//        // TelephonyManager.endCall(); 1.5版本后，把该方法阉割掉了
+//        // 想用该功能，实现方法
+//        // ServiceManager.getService();
+//        // 反射调用
+//
+//        try {
+//            // 1.class
+//            Class clazz = Class.forName("android.os.ServiceManager");
+//            // 2. method
+//            Method method = clazz.getDeclaredMethod("getService", String.class);
+//
+//            // 3.obj 不需要 静态方法
+//            // 4. 调用
+//            IBinder binder = (IBinder) method.invoke(null,
+//                    Context.TELEPHONY_SERVICE);
+//
+//            // 5.aidl
+//            ITelephony iTelephony = ITelephony.Stub.asInterface(binder);
+//
+//            AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+//            // 先静音处理
+//            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+//            // 挂断电话
+//            iTelephony.endCall();
+//            Log.e("4", "挂断电话");
+//            // 再恢复正常铃声
+//            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
 }
 

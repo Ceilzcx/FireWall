@@ -24,7 +24,8 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.firewall.R;
 import com.example.firewall.base.BaseActivityUpEnableWithMenu;
-import com.example.firewall.bean.AppInfo;
+import com.example.firewall.bean.AppInfoBean;
+
 import com.example.firewall.dao.AppManagerDao;
 
 import java.io.IOException;
@@ -45,8 +46,8 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
     private ProgressBar pbLoading;
 
 
-    private List<AppInfo> systemApps = new ArrayList<>();
-    private List<AppInfo> userApps = new ArrayList<>();
+    private List<AppInfoBean> systemApps = new ArrayList<>();
+    private List<AppInfoBean> userApps = new ArrayList<>();
     private List<Boolean> checkeds = new ArrayList<>();
     private AppAdapter adapter = new AppAdapter();
     private AppRemovedReceiver uninstallReceiver = new AppRemovedReceiver();
@@ -67,7 +68,7 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
     /**
      * 1
      */
-    @Override
+
     protected void initView() {
         setContentView(R.layout.activity_software_manager);
         // 绑定视图
@@ -84,42 +85,42 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
     /**
      * 2
      */
-    @Override
-    protected void initData() {
-        // 检查是否root
-        root = RootTools.isRootAvailable();
 
-        // 获取身故空间
-        long romFreeSpace = AppManagerDao.getRomFreeSpace();
-        long sdCardFreeSpace = AppManagerDao.getSdCardFreeSpace();
-
-        tvRomFreeSpace.setText(getString(R.string.rom_free_space) + Formatter.formatFileSize(this, romFreeSpace));
-        tvSdCardFreeSpace.setText(getString(R.string.sd_card_free_space) + Formatter.formatFileSize(this, sdCardFreeSpace));
-
-
-        if (null != initDateThread && initDateThread.isAlive()) {
-            return;
-        }
-
-        initDateThread = new Thread() {
-            @Override
-            public void run() {
-                // 获取应用信息
-                AppManagerDao.getInstalledAppInfo(
-                        SoftwareManagerActivity.this,
-                        apps -> initAppsInfo(apps));
-            }
-        };
-
-        initDateThread.start();
-    }
+//    protected void initData() {
+//        // 检查是否root
+//        root = RootTools.isRootAvailable();
+//
+//        // 获取身故空间
+//        long romFreeSpace = AppManagerDao.getRomFreeSpace();
+//        long sdCardFreeSpace = AppManagerDao.getSdCardFreeSpace();
+//
+//        tvRomFreeSpace.setText(getString(R.string.rom_free_space) + Formatter.formatFileSize(this, romFreeSpace));
+//        tvSdCardFreeSpace.setText(getString(R.string.sd_card_free_space) + Formatter.formatFileSize(this, sdCardFreeSpace));
+//
+//
+//        if (null != initDateThread && initDateThread.isAlive()) {
+//            return;
+//        }
+//
+//        initDateThread = new Thread() {
+//            @Override
+//            public void run() {
+//                // 获取应用信息
+//                AppManagerDao.getInstalledAppInfo(
+//                        SoftwareManagerActivity.this,
+//                        apps -> initAppsInfo(apps));
+//            }
+//        };
+//
+//        initDateThread.start();
+//    }
 
     /**
      * 初始化app信息
      *
      * @param apps
      */
-    private void initAppsInfo(final List<AppInfo> apps) {
+    private void initAppsInfo(final List<AppInfoBean > apps) {
 
         runOnUiThread(() -> {
             //添加前清除列表
@@ -127,7 +128,7 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
             userApps.clear();
             checkeds.clear();
             // 添加到列表
-            for (AppInfo app : apps) {
+            for (AppInfoBean  app : apps) {
                 if (app.isSystemApp()) {
                     systemApps.add(app);
                 } else {
@@ -158,7 +159,7 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
     /**
      * 3
      */
-    @Override
+
     protected void initEvent() {
         //设置滚动侦听器来实现类型标签更改文本
         lvApp.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -185,7 +186,7 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
         lvApp.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AppInfo bean = (AppInfo) lvApp.getItemAtPosition(position);
+                AppInfoBean bean = (AppInfoBean) lvApp.getItemAtPosition(position);
 //                System.out.println(bean.getName());
                 Intent intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS",
                         Uri.parse("package:" + bean.getPackageName()));
@@ -214,7 +215,7 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
     private class AppRemovedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            initData();
+            //initData();
             System.out.println("AppRemovedReceiver");
         }
     }
@@ -267,7 +268,7 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
                 item = (AppItem) view.getTag();
             }
 
-            AppInfo bean = this.getItem(position);
+            AppInfoBean  bean = this.getItem(position);
 
 
             item.ivIcon.setImageDrawable(bean.getIcon());
@@ -297,8 +298,8 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
 
 
         @Override
-        public AppInfo getItem(int position) {
-            AppInfo bean = null;
+        public AppInfoBean getItem(int position) {
+            AppInfoBean  bean = null;
 
             if (0 == position || userApps.size() + 1 == position)
                 return bean;
@@ -352,7 +353,7 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        uninstallSelectedApp();
+                        //uninstallSelectedApp();
                     }
                 })
                 .setNegativeButton(R.string.cancel, null)
@@ -362,43 +363,43 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
     /**
      * 进入系统详情卸载
      */
-    private void uninstallSelectedApp() {
-        for (int i = 1; i < checkeds.size(); i++) {
-            if (!checkeds.get(i)) {
-                continue;
-            }
-            //获取应用信息
-            AppInfo app = (AppInfo) lvApp.getItemAtPosition(i);
-            if (null == app)
-                continue;
-            System.out.println(app.getName());
-            System.out.println(app.getApkPath());
-            // root 系统应用
-            if (app.isSystemApp() && root) {
-
-                try {
-                    if (!RootTools.isAccessGiven())
-                        continue;
-                    //改变系统目录访问权限
-                    RootTools.sendShell("mount -o remount rw /system", 10000);
-                    RootTools.sendShell("rm -r " + app.getApkPath(), 10000);
-                    //改变回权限
-                    RootTools.sendShell("mount -o remount r /system", 10000);
-                } catch (TimeoutException e) {
-                    e.printStackTrace();
-                } catch (RootToolsException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                continue;
-            }
-
-            Intent intent = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + app.getPackageName()));
-            startActivity(intent);
-        }
-
-    }
+//    private void uninstallSelectedApp() {
+//        for (int i = 1; i < checkeds.size(); i++) {
+//            if (!checkeds.get(i)) {
+//                continue;
+//            }
+//            //获取应用信息
+//            AppInfo app = (AppInfo) lvApp.getItemAtPosition(i);
+//            if (null == app)
+//                continue;
+//            System.out.println(app.getName());
+//            System.out.println(app.getApkPath());
+//            // root 系统应用
+//            if (app.isSystemApp() && root) {
+//
+//                try {
+//                    if (!RootTools.isAccessGiven())
+//                        continue;
+//                    //改变系统目录访问权限
+//                    RootTools.sendShell("mount -o remount rw /system", 10000);
+//                    RootTools.sendShell("rm -r " + app.getApkPath(), 10000);
+//                    //改变回权限
+//                    RootTools.sendShell("mount -o remount r /system", 10000);
+//                } catch (TimeoutException e) {
+//                    e.printStackTrace();
+//                } catch (RootToolsException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                continue;
+//            }
+//
+//            Intent intent = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + app.getPackageName()));
+//            startActivity(intent);
+//        }
+//
+//    }
 
     /**
      * 取消全选

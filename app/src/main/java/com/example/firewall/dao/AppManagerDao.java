@@ -10,7 +10,8 @@ import android.os.Environment;
 import android.os.RemoteException;
 import android.text.TextUtils;
 
-import com.jcy31401129.androidfirewall.domain.AppInfoBean;
+
+import com.example.firewall.bean.AppInfoBean;
 
 import java.io.File;
 import java.lang.reflect.Method;
