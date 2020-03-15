@@ -20,7 +20,7 @@ import com.example.firewall.dao.InterceptDao;
 
 import java.util.List;
 
-import static com.example.firewall.util.CallUtil.endCall;
+//import static com.example.firewall.util.CallUtil.endCall;
 
 
 /**
@@ -111,7 +111,7 @@ public class BlacklistInterceptService extends Service {
 
                                         });
 
-                                endCall();
+                                //endCall();
                             }
                         }
                         break;

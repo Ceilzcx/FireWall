@@ -33,6 +33,8 @@
         <service android:name=".service.BlacklistInterceptService"/>
         <service android:name=".service.BlacklistInterceptService"/>
         <activity android:name=".activity.ProcessManagerActivity"></activity>
+        <activity android:name=".activity.AntivirusActivity"></activity>
+        <activity android:name=".activity.AntivirusResultActivity"></activity>
 
     </application>
 
