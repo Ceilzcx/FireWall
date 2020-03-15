@@ -6,21 +6,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+//import com.android.internal.telephony.ITelephony;
 import com.example.firewall.bean.InterceptPhoneInfo;
 import com.example.firewall.dao.InterceptDao;
 
+import java.lang.reflect.Method;
 import java.util.List;
-
-//import static com.example.firewall.util.CallUtil.endCall;
 
 
 /**
@@ -76,6 +78,7 @@ public class BlacklistInterceptService extends Service {
         registerReceiver(smsBroadcastReceiver, filter);
 
         // 开启电话的监听
+        Log.e("1：", "开启电话监听");
 
         tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         listener = new PhoneStateListener() {
@@ -93,7 +96,7 @@ public class BlacklistInterceptService extends Service {
                         for (InterceptPhoneInfo info : infos) {
                             if (incomingNumber.equals(info.getNumber())) {
                                 // 电话拦截
-                                System.out.println("挂断电话");
+                                Log.e("2", "收到电话");
                                 // 挂断电话之前先注册内容观察者,监听电话日志的变化
                                 getContentResolver().registerContentObserver(
                                         Uri.parse("content://call_log/calls"), true,
@@ -107,6 +110,7 @@ public class BlacklistInterceptService extends Service {
                                                 getContentResolver()
                                                         .unregisterContentObserver(this);
                                                 super.onChange(selfChange);
+                                                Log.e("3", "拦截电话");
                                             }
 
                                         });
@@ -145,6 +149,41 @@ public class BlacklistInterceptService extends Service {
         // 删除日志
         getContentResolver().delete(uri, "number=?", new String[] { number });
     }
+
+//    protected void endCall() {
+//        // TelephonyManager.endCall(); 1.5版本后，把该方法阉割掉了
+//        // 想用该功能，实现方法
+//        // ServiceManager.getService();
+//        // 反射调用
+//
+//        try {
+//            // 1.class
+//            Class clazz = Class.forName("android.os.ServiceManager");
+//            // 2. method
+//            Method method = clazz.getDeclaredMethod("getService", String.class);
+//
+//            // 3.obj 不需要 静态方法
+//            // 4. 调用
+//            IBinder binder = (IBinder) method.invoke(null,
+//                    Context.TELEPHONY_SERVICE);
+//
+//            // 5.aidl
+//            ITelephony iTelephony = ITelephony.Stub.asInterface(binder);
+//
+//            AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+//            // 先静音处理
+//            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+//            // 挂断电话
+//            iTelephony.endCall();
+//            Log.e("4", "挂断电话");
+//            // 再恢复正常铃声
+//            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
 }
 
