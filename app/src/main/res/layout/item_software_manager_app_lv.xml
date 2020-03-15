@@ -12,7 +12,7 @@
         android:id="@+id/iv_icon"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:src="@mipmap/ic_launcher" />
 
     <LinearLayout
@@ -21,7 +21,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="5"
         android:orientation="vertical"
-        android:paddingRight="@dimen/activity_horizontal_margin">
+        android:paddingEnd="@dimen/activity_horizontal_margin">
 
         <TextView
             android:id="@+id/tv_title"
@@ -30,7 +30,6 @@
             android:layout_marginBottom="5dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="计算器。。。。。。。。。。。。。。。"
             android:textColor="@android:color/black" />
 
         <TextView
@@ -38,8 +37,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLines="1"
-            android:text="100M" />
+            android:maxLines="1" />
+
     </LinearLayout>
 
     <CheckBox

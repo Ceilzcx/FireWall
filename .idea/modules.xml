@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FireWall.iml" filepath="$PROJECT_DIR$/FireWall.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RootRools/RootRools.iml" filepath="$PROJECT_DIR$/RootRools/RootRools.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
