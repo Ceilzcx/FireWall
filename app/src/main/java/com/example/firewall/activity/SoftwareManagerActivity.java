@@ -26,16 +26,13 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.firewall.R;
 import com.example.firewall.base.BaseActivityUpEnableWithMenu;
-import com.example.firewall.bean.AppInfo;
 import com.example.firewall.bean.AppInfoBean;
 
 import com.example.firewall.dao.AppManagerDao;
 import com.stericson.RootTools.RootTools;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 
 /**

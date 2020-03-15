@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
        virusKilling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

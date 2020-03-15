@@ -1,15 +1,24 @@
 package com.example.firewall.dao;
 
+import android.app.usage.StorageStats;
+import android.app.usage.StorageStatsManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageDataObserver;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
+import android.os.Build;
 import android.os.Environment;
+import android.os.Process;
 import android.os.RemoteException;
+import android.os.storage.StorageManager;
 import android.text.TextUtils;
 
+
+import androidx.annotation.RequiresApi;
 
 import com.example.firewall.bean.AppInfoBean;
 
@@ -49,6 +58,7 @@ public class AppManagerDao {
      * 获取所有安装的应用信息
      * @return 返回AppInfoBean列表，不为空
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static List<AppInfoBean> getInstalledAppInfo(Context context, final AppInfoListener listener) {
 
         PackageManager pm = context.getPackageManager();
@@ -105,7 +115,7 @@ public class AppManagerDao {
             //获取apk路径
             bean.setApkPath(info.sourceDir);
             //获取app大小
-            getAppSize(context, info.packageName, new AppSizeInfoListener() {
+            getAppSize(context, info.packageName,info.uid, new AppSizeInfoListener() {
                 @Override
                 public void onGetSizeInfoCompleted(AppSizeInfo sizeInfo) {
                     //总大小=缓存+数据+应用
@@ -136,7 +146,8 @@ public class AppManagerDao {
      * @param packageName 包名
      * @param listener 获取大小成功时调用
      */
-    public static void getAppSize(Context context, String packageName, final AppSizeInfoListener listener) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void getAppSize(Context context, String packageName, int uid, final AppSizeInfoListener listener) {
         // 检查参数
         if(null == listener) {
             throw new NullPointerException("listener can't be null");
@@ -146,28 +157,51 @@ public class AppManagerDao {
         }
 
         // get pm
-        PackageManager pm = context.getPackageManager();
+        final StorageStatsManager storageStatsManager = (StorageStatsManager)context.getSystemService(Context.STORAGE_STATS_SERVICE);
+        final StorageManager storageManager = (StorageManager)context.getSystemService(Context.STORAGE_SERVICE);
+        try {
+            ApplicationInfo ai = context.getPackageManager().getApplicationInfo(packageName, 0);
+            assert storageStatsManager != null;
+            StorageStats storageStats = storageStatsManager.queryStatsForUid(ai.storageUuid, uid);
+            listener.onGetSizeInfoCompleted(
+                    new AppSizeInfo(storageStats.getCacheBytes(), storageStats.getDataBytes(), storageStats.getAppBytes()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*PackageManager pm = context.getPackageManager();
         Method getPackageSizeInfo = null;
         try {
             // 获取包大小信息的方法
-            getPackageSizeInfo = pm.getClass().getMethod(
-                    "getPackageSizeInfo",
+            getPackageSizeInfo = pm.getClass().getMethod("getPackageSizeInfo",
                     String.class, IPackageStatsObserver.class);
+
             // 调用方法
             getPackageSizeInfo.invoke(pm, packageName,
                     new IPackageStatsObserver.Stub() {
                         @Override
-                        public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
-                                throws RemoteException {
+                        public void onGetStatsCompleted(PackageStats pStats, boolean succeeded) {
                             //调用监听器
-                            listener.onGetSizeInfoCompleted(
-                                    new AppSizeInfo(pStats.cacheSize, pStats.dataSize, pStats.codeSize));
+                            if (succeeded)
+                                listener.onGetSizeInfoCompleted(
+                                        new AppSizeInfo(pStats.cacheSize, pStats.dataSize, pStats.codeSize));
+
                         }
                     });
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
+    }
+
+    //申请使用权限
+    public static void requestAppUsagePermission(Context context) {
+        Intent intent = new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -199,7 +233,7 @@ public class AppManagerDao {
     /**
      * 清除完成后唤醒
      */
-    public static interface ClearCacheListener {
+    public interface ClearCacheListener {
         /**
          *成功时唤醒
          */
@@ -214,14 +248,14 @@ public class AppManagerDao {
     /**
      * 应用信息获取成功时唤醒
      */
-    public static interface AppInfoListener {
+    public interface AppInfoListener {
         void onGetInfoCompleted(List<AppInfoBean> apps);
     }
 
     /**
      * 大小信息获取时唤醒
      */
-    public static interface AppSizeInfoListener {
+    public interface AppSizeInfoListener {
         void onGetSizeInfoCompleted(AppSizeInfo sizeInfo);
     }
 
