@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +22,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.example.firewall.R;
 import com.example.firewall.base.BaseActivityUpEnableWithMenu;
@@ -56,6 +60,14 @@ public class ProcessManagerActivity extends BaseActivityUpEnableWithMenu {
         super(R.string.process_manager, R.menu.menu_process_manager);
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initView();
+        initData();
+        initEvent();
+    }
+
     /**
      * 1
      */
@@ -78,11 +90,13 @@ public class ProcessManagerActivity extends BaseActivityUpEnableWithMenu {
 
     protected void initData() {
 
-        long totalMemory = ProcessManagerEngine.getTotalMemory();
-        long freeMemory = ProcessManagerEngine.getFreeMemory(this);
-
-        tvTotalMemory.setText(getString(R.string.total_memory) + Formatter.formatFileSize(this, totalMemory));
-        tvFreeMemory.setText(getString(R.string.free_memory) + Formatter.formatFileSize(this, freeMemory));
+        String totalMemory = ProcessManagerEngine.getTotalMemory2(ProcessManagerActivity.this);
+        String freeMemory =ProcessManagerEngine.getAvailMemory(ProcessManagerActivity.this);
+        //long freeMemory = ProcessManagerEngine.getFreeMemory(this);
+        tvTotalMemory.setText(getString(R.string.total_memory)+totalMemory);
+        tvFreeMemory.setText(getString(R.string.free_memory)+freeMemory);
+        //tvTotalMemory.setText(getString(R.string.total_memory) + Formatter.formatFileSize(this, totalMemory));
+        //tvFreeMemory.setText(getString(R.string.free_memory) + Formatter.formatFileSize(this, freeMemory));
 
         //线程存在，不需要新线程
         if (null != initDataThread && initDataThread.isAlive()) {

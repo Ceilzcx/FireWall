@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_software_manager"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.SoftwareManagerActivity">
+    android:layout_height="match_parent">
+<!--    tools:context="com.jcy31401129.androidfirewall.activity.SoftwareManagerActivity">-->
 
     <LinearLayout
         android:id="@+id/ll_free_space"
@@ -37,7 +37,7 @@
         android:id="@+id/lv_app"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ll_free_space"/>
+        android:layout_below="@id/ll_free_space"></ListView>
 
     <include
         android:id="@+id/tv_type_label"

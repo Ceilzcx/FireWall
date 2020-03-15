@@ -36,6 +36,9 @@
             android:enabled="true"
             android:exported="true" />
         <activity android:name=".activity.ProcessManagerActivity"></activity>
+        <activity android:name=".activity.AntivirusActivity"></activity>
+        <activity android:name=".activity.AntivirusResultActivity"></activity>
+        <activity android:name=".activity.SoftwareManagerActivity"></activity>
 
     </application>
 
