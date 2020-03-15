@@ -17,14 +17,16 @@ import com.example.firewall.service.BlacklistInterceptService;
 public class MainActivity extends AppCompatActivity {
     private ImageView phoneInfo;
     private ImageView communicate;
-    private ImageView ProcessManager;
+    private ImageView processManager;
+    private ImageView virusKilling;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         phoneInfo=findViewById(R.id.phone_info);
         communicate=findViewById(R.id.communication_security);
-        ProcessManager=findViewById(R.id.process_management);
+        processManager=findViewById(R.id.process_management);
+        virusKilling=findViewById(R.id.virus_killing);
 
         phoneInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,14 +42,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        ProcessManager.setOnClickListener(new View.OnClickListener() {
+        processManager.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this,ProcessManagerActivity.class);
                 startActivity(intent);
             }
         });
-
+       virusKilling.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,AntivirusActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //开启电话拦截服务
         Intent intent = new Intent(MainActivity.this, BlacklistInterceptService.class);
