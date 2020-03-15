@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,13 +21,16 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.firewall.R;
 import com.example.firewall.base.BaseActivityUpEnableWithMenu;
+import com.example.firewall.bean.AppInfo;
 import com.example.firewall.bean.AppInfoBean;
 
 import com.example.firewall.dao.AppManagerDao;
+import com.stericson.RootTools.RootTools;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,6 +69,14 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
         super(R.string.software_manager, R.menu.menu_software_manager);
     }
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initView();
+        initData();
+        initEvent();
+    }
+
     /**
      * 1
      */
@@ -86,34 +98,34 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
      * 2
      */
 
-//    protected void initData() {
-//        // 检查是否root
-//        root = RootTools.isRootAvailable();
-//
-//        // 获取身故空间
-//        long romFreeSpace = AppManagerDao.getRomFreeSpace();
-//        long sdCardFreeSpace = AppManagerDao.getSdCardFreeSpace();
-//
-//        tvRomFreeSpace.setText(getString(R.string.rom_free_space) + Formatter.formatFileSize(this, romFreeSpace));
-//        tvSdCardFreeSpace.setText(getString(R.string.sd_card_free_space) + Formatter.formatFileSize(this, sdCardFreeSpace));
-//
-//
-//        if (null != initDateThread && initDateThread.isAlive()) {
-//            return;
-//        }
-//
-//        initDateThread = new Thread() {
-//            @Override
-//            public void run() {
-//                // 获取应用信息
-//                AppManagerDao.getInstalledAppInfo(
-//                        SoftwareManagerActivity.this,
-//                        apps -> initAppsInfo(apps));
-//            }
-//        };
-//
-//        initDateThread.start();
-//    }
+    protected void initData() {
+        // 检查是否root
+        root = RootTools.isRootAvailable();
+
+        // 获取身故空间
+        long romFreeSpace = AppManagerDao.getRomFreeSpace();
+        long sdCardFreeSpace = AppManagerDao.getSdCardFreeSpace();
+
+        tvRomFreeSpace.setText(getString(R.string.rom_free_space) + Formatter.formatFileSize(this, romFreeSpace));
+        tvSdCardFreeSpace.setText(getString(R.string.sd_card_free_space) + Formatter.formatFileSize(this, sdCardFreeSpace));
+
+
+        if (null != initDateThread && initDateThread.isAlive()) {
+            return;
+        }
+
+        initDateThread = new Thread() {
+            @Override
+            public void run() {
+                // 获取应用信息
+                AppManagerDao.getInstalledAppInfo(
+                        SoftwareManagerActivity.this,
+                        apps -> initAppsInfo(apps));
+            }
+        };
+
+        initDateThread.start();
+    }
 
     /**
      * 初始化app信息

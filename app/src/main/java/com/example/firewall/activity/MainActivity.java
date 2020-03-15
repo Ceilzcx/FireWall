@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView communicate;
     private ImageView processManager;
     private ImageView virusKilling;
+    private ImageView softManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         communicate=findViewById(R.id.communication_security);
         processManager=findViewById(R.id.process_management);
         virusKilling=findViewById(R.id.virus_killing);
+        softManager=findViewById(R.id.sofeware_management);
 
         phoneInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this,AntivirusActivity.class);
+                startActivity(intent);
+            }
+        });
+        softManager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,SoftwareManagerActivity.class);
                 startActivity(intent);
             }
         });
