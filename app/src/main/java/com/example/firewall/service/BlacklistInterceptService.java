@@ -6,12 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -21,8 +23,6 @@ import com.example.firewall.dao.InterceptDao;
 
 import java.lang.reflect.Method;
 import java.util.List;
-
-import com.android.internal.telephony.ITelephony;
 
 
 /**
@@ -78,6 +78,7 @@ public class BlacklistInterceptService extends Service {
         registerReceiver(smsBroadcastReceiver, filter);
 
         // 开启电话的监听
+        Log.e("1：", "开启电话监听");
 
         tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         listener = new PhoneStateListener() {
@@ -95,7 +96,7 @@ public class BlacklistInterceptService extends Service {
                         for (InterceptPhoneInfo info : infos) {
                             if (incomingNumber.equals(info.getNumber())) {
                                 // 电话拦截
-                                System.out.println("挂断电话");
+                                Log.e("2", "收到电话");
                                 // 挂断电话之前先注册内容观察者,监听电话日志的变化
                                 getContentResolver().registerContentObserver(
                                         Uri.parse("content://call_log/calls"), true,
@@ -109,6 +110,7 @@ public class BlacklistInterceptService extends Service {
                                                 getContentResolver()
                                                         .unregisterContentObserver(this);
                                                 super.onChange(selfChange);
+                                                Log.e("3", "拦截电话");
                                             }
 
                                         });
@@ -173,6 +175,7 @@ public class BlacklistInterceptService extends Service {
             mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
             // 挂断电话
             iTelephony.endCall();
+            Log.e("4", "挂断电话");
             // 再恢复正常铃声
             mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 

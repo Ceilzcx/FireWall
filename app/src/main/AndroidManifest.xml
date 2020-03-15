@@ -30,8 +30,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.PhoneCallLogActivity"/>
-        <service android:name=".service.BlacklistInterceptService"/>
-        <service android:name=".service.BlacklistInterceptService"/>
+        <service
+            android:name=".service.BlacklistInterceptService"
+            android:enabled="true"
+            android:exported="true" />
         <activity android:name=".activity.ProcessManagerActivity"></activity>
 
     </application>
