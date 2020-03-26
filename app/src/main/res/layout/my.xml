@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="开始抓包"
+        android:textSize="16sp"/>
+
+    <Button
+        android:id="@+id/stop_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/start_button"
+        android:text="停止抓包"
+        android:textSize="16sp" />
+
+
+
+    <ListView
+        android:id="@+id/pack_lv"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/stop_button"
+        android:layout_height="match_parent"/>
+</RelativeLayout>

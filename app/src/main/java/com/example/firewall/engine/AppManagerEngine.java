@@ -1,16 +1,22 @@
 package com.example.firewall.engine;
 
+import android.app.usage.StorageStats;
+import android.app.usage.StorageStatsManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageDataObserver;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
+import android.os.Build;
 import android.os.Environment;
 import android.os.RemoteException;
 import android.text.TextUtils;
 
+import androidx.annotation.RequiresApi;
+
 import com.example.firewall.bean.AppInfoBean;
+import com.example.firewall.dao.AppManagerDao;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -48,6 +54,7 @@ public class AppManagerEngine {
      * 获取所有安装的应用信息
      * @return 返回AppInfoBean列表，不为空
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static List<AppInfoBean> getInstalledAppInfo(Context context, final AppInfoListener listener) {
 
         PackageManager pm = context.getPackageManager();
@@ -104,24 +111,21 @@ public class AppManagerEngine {
             //获取apk路径
             bean.setApkPath(info.sourceDir);
             //获取app大小
-            getAppSize(context, info.packageName, new AppSizeInfoListener() {
-                @Override
-                public void onGetSizeInfoCompleted(AppSizeInfo sizeInfo) {
-                    //总大小=缓存+数据+应用
-                    long totalSize = sizeInfo.cacheSize + sizeInfo.codeSize + sizeInfo.dataSize;
-                    bean.setSize(totalSize);
-                    bean.setCacheSize(sizeInfo.cacheSize);
-                    // 监听器为空，不调用
-                    if(null == listener)
-                        return;
-                    synchronized (count) {
-                        count.completedCount++;
-                        //获取所以有app大小时，唤醒监听器
-                        if(count.completedCount == infos.size()) {
-                            // 停止计时器
-                            timer.cancel();
-                            listener.onGetInfoCompleted(appInfos);
-                        }
+            getAppSize(context, info.packageName, sizeInfo -> {
+                //总大小=缓存+数据+应用
+                long totalSize = sizeInfo.cacheSize + sizeInfo.codeSize + sizeInfo.dataSize;
+                bean.setSize(totalSize);
+                bean.setCacheSize(sizeInfo.cacheSize);
+                // 监听器为空，不调用
+                if(null == listener)
+                    return;
+                synchronized (count) {
+                    count.completedCount++;
+                    //获取所以有app大小时，唤醒监听器
+                    if(count.completedCount == infos.size()) {
+                        // 停止计时器
+                        timer.cancel();
+                        listener.onGetInfoCompleted(appInfos);
                     }
                 }
             });
@@ -135,6 +139,7 @@ public class AppManagerEngine {
      * @param packageName 包名
      * @param listener 获取大小成功时调用
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static void getAppSize(Context context, String packageName, final AppSizeInfoListener listener) {
         // 检查参数
         if(null == listener) {
@@ -143,26 +148,13 @@ public class AppManagerEngine {
         if(TextUtils.isEmpty(packageName)) {
             throw  new IllegalArgumentException("packageName can't be empty");
         }
-
-        // get pm
-        PackageManager pm = context.getPackageManager();
-        Method getPackageSizeInfo = null;
+        final StorageStatsManager storageStatsManager = (StorageStatsManager)context.getSystemService(Context.STORAGE_STATS_SERVICE);
+        //final StorageManager storageManager = (StorageManager)context.getSystemService(Context.STORAGE_SERVICE);
         try {
-            // 获取包大小信息的方法
-            getPackageSizeInfo = pm.getClass().getMethod(
-                    "getPackageSizeInfo",
-                    String.class, IPackageStatsObserver.class);
-            // 调用方法
-            getPackageSizeInfo.invoke(pm, packageName,
-                    new IPackageStatsObserver.Stub() {
-                        @Override
-                        public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
-                                throws RemoteException {
-                            //调用监听器
-                            listener.onGetSizeInfoCompleted(
-                                    new AppSizeInfo(pStats.cacheSize, pStats.dataSize, pStats.codeSize));
-                        }
-                    });
+            ApplicationInfo ai = context.getPackageManager().getApplicationInfo(packageName, 0);
+            assert storageStatsManager != null;
+            StorageStats storageStats = storageStatsManager.queryStatsForUid(ai.storageUuid, ai.uid);
+            listener.onGetSizeInfoCompleted(new AppSizeInfo(storageStats.getCacheBytes(), storageStats.getDataBytes(), storageStats.getAppBytes()));
         } catch (Exception e) {
             e.printStackTrace();
         }

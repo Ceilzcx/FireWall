@@ -49,6 +49,8 @@ public class CommunicateAdapter extends RecyclerView.Adapter<CommunicateAdapter.
             holder.textView_type.setText("电话拦截");
         holder.imageView.setOnClickListener(v -> {
             dao.delete(holder.textView_number.getText().toString());
+            infos.remove(info);
+            notifyDataSetChanged();
         });
     }
 

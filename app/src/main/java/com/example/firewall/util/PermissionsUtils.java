@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat;
 /**
  * 申请权限,传入要申请的权限和Context
  */
-public class PermissionsUtil {
+public class PermissionsUtils {
     private static final int OPEN_SET_REQUEST_CODE = 100;
 
     //调用此方法判断是否拥有权限

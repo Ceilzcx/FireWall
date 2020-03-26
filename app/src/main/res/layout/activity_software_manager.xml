@@ -37,7 +37,7 @@
         android:id="@+id/lv_app"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ll_free_space"></ListView>
+        android:layout_below="@id/ll_free_space"/>
 
     <include
         android:id="@+id/tv_type_label"

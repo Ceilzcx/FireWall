@@ -12,8 +12,6 @@ import android.os.Build;
 import android.os.Debug;
 import android.provider.Settings;
 
-import com.jaredrummler.android.processes.AndroidProcesses;
-import com.jaredrummler.android.processes.models.AndroidAppProcess;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -22,6 +20,8 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.example.firewall.bean.ProcessInfo;
+import com.jaredrummler.android.processes.AndroidProcesses;
+import com.jaredrummler.android.processes.models.AndroidAppProcess;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -117,7 +117,7 @@ public class ProcessManagerEngine {
     public static List<ProcessInfo> getRunningProcessesInfo(Context context) {
         List<ProcessInfo> list = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            list = getRunningProcessesInfoByProc(context);
+            list = getRunningProcesses(context);
         } else {
             list = getRunningProcessesInfoCompat(context);
         }
@@ -178,22 +178,19 @@ public class ProcessManagerEngine {
      * @param context
      * @return
      */
-    public static List<ProcessInfo> getRunningProcessesInfoByProc(Context context) {
+
+    public static List<ProcessInfo> getRunningProcesses(Context context){
+        List<ProcessInfo> infos = new ArrayList<>();
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         PackageManager pm = context.getPackageManager();
-        // get running app processes info
-        List<AndroidAppProcess> processes = AndroidProcesses.getRunningAppProcesses();
-        // create list. Specific it init size
-        List<ProcessInfo> infos = new ArrayList<>(processes.size());
-        for (AndroidAppProcess process: processes) {
+        UsageStatsManager usm = (UsageStatsManager)context.getSystemService(Context.USAGE_STATS_SERVICE);
+        long time = System.currentTimeMillis();
+        List<UsageStats> appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,  time - 1000*1000, time);
+        for (UsageStats usageStats : appList) {
             // create bean
             ProcessInfo bean = new ProcessInfo();
-            // get package name
-            bean.setPackageName(process.getPackageName());
-            // check empty
-            if(TextUtils.isEmpty(bean.getPackageName())) {
-                continue;
-            }
+            // set value
+            bean.setPackageName(usageStats.getPackageName());
             // get package info
             ApplicationInfo applicationInfo = null;
             try {
@@ -212,14 +209,17 @@ public class ProcessManagerEngine {
                 bean.setSystemApp(true);
             }// if not, need set false. Actually it was.
             // memory
-            Debug.MemoryInfo[] processMemoryInfo = am.getProcessMemoryInfo(new int[]{process.pid});
+            /*Debug.MemoryInfo[] processMemoryInfo = am.getProcessMemoryInfo(new int[]{applicationInfo.uid});
             if (processMemoryInfo.length >= 1) {
                 bean.setMemory(processMemoryInfo[0].getTotalPss() * 1024);
-            }
+            }*/
+            bean.setMemory(usageStats.getTotalTimeInForeground());
             // add to list
             infos.add(bean);
         }
-        return infos;
+
+
+        return  infos;
     }
 
     /**

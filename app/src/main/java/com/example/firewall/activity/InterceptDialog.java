@@ -10,8 +10,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.firewall.R;
+import com.example.firewall.adapter.CommunicateAdapter;
 import com.example.firewall.bean.InterceptPhoneInfo;
 import com.example.firewall.dao.InterceptDao;
+
+import java.util.List;
 
 public class InterceptDialog extends Dialog implements View.OnClickListener{
     private TextView titleTxt;
@@ -24,6 +27,8 @@ public class InterceptDialog extends Dialog implements View.OnClickListener{
     private Context mContext;
     private String title;
 
+    private List<InterceptPhoneInfo> infos;
+    private CommunicateAdapter adapter;
 
     public InterceptDialog(Context context) {
         super(context);
@@ -31,16 +36,12 @@ public class InterceptDialog extends Dialog implements View.OnClickListener{
     }
 
 
-    public InterceptDialog(Context context, int themeResId) {
+    public InterceptDialog(Context context, int themeResId, List<InterceptPhoneInfo> infos, CommunicateAdapter adapter) {
         super(context, themeResId);
         this.mContext = context;
+        this.infos = infos;
+        this.adapter = adapter;
     }
-
-    protected InterceptDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
-        this.mContext = context;
-    }
-
 
     public void setTitle(String title){
         this.title = title;
@@ -86,15 +87,12 @@ public class InterceptDialog extends Dialog implements View.OnClickListener{
                 else if (checkBox_note.isChecked() && !checkBox_tel.isChecked())
                     info.setType(InterceptPhoneInfo.NOTE_INTERCEPT);
                 dao.add(info);
+                infos.add(info);
+                adapter.notifyDataSetChanged();
                 Log.e("number:", info.getNumber());
                 this.dismiss();
                 break;
         }
-    }
-
-
-    public interface OnCloseListener{
-        void onClick(Dialog dialog, boolean confirm);
     }
 
 }

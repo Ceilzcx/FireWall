@@ -111,20 +111,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="parent"
-            android:src="@drawable/ic_advanced_tools"
-            android:layout_marginLeft="10dp"
-            >
-        </ImageView>
+            android:src="@drawable/ic_wifi"
+            android:layout_marginStart="10dp" />
+
         <TextView
             android:id="@+id/advanced_tools_button"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="高级工具"
+            android:text="WiFi管理"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/advanced_tools"
-            app:layout_constraintLeft_toLeftOf="@+id/advanced_tools"
-            >
-        </TextView>
+            app:layout_constraintLeft_toLeftOf="@+id/advanced_tools" />
 
         <ImageView
             android:id="@+id/traffic_statistics"
@@ -133,9 +130,8 @@
             app:layout_constraintTop_toTopOf="@+id/advanced_tools"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:background="@drawable/ic_traffic_statistics"
-            >
-        </ImageView>
+            android:background="@drawable/ic_traffic_statistics" />
+
         <TextView
             android:id="@+id/traffic_statistics_button"
             android:layout_width="60dp"
@@ -143,9 +139,7 @@
             android:text="流量统计"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@id/traffic_statistics"
-            app:layout_constraintLeft_toLeftOf="@id/traffic_statistics"
-            >
-        </TextView>
+            app:layout_constraintLeft_toLeftOf="@id/traffic_statistics" />
 
         <ImageView
             android:id="@+id/process_management"
@@ -154,8 +148,8 @@
             app:layout_constraintTop_toTopOf="@+id/advanced_tools"
             app:layout_constraintRight_toRightOf="parent"
             android:background="@drawable/ic_process_management"
-            android:layout_marginRight="10dp">
-        </ImageView>
+            android:layout_marginRight="10dp"/>
+
         <TextView
             android:id="@+id/process_management_button"
             android:layout_width="60dp"
@@ -163,9 +157,7 @@
             android:gravity="center"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/process_management"
-            app:layout_constraintLeft_toLeftOf="@id/process_management"
-            >
-        </TextView>
+            app:layout_constraintLeft_toLeftOf="@id/process_management" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -183,9 +175,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="parent"
             android:src="@drawable/ic_virus_killing"
-            android:layout_marginLeft="10dp"
-            >
-        </ImageView>
+            android:layout_marginLeft="10dp"/>
+
         <TextView
             android:id="@+id/virus_killing_button"
             android:layout_width="60dp"
@@ -193,9 +184,7 @@
             android:text="病毒查杀"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/virus_killing"
-            app:layout_constraintLeft_toLeftOf="@+id/virus_killing"
-            >
-        </TextView>
+            app:layout_constraintLeft_toLeftOf="@+id/virus_killing" />
 
         <ImageView
             android:id="@+id/set_center"
@@ -204,14 +193,13 @@
             app:layout_constraintTop_toTopOf="@+id/virus_killing"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:background="@drawable/ic_set_center"
-            >
-        </ImageView>
+            android:background="@drawable/ic_port_scan" />
+
         <TextView
             android:id="@+id/set_center_button"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="设置中心"
+            android:text="端口查看"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@id/set_center"
             app:layout_constraintLeft_toLeftOf="@id/set_center"
@@ -238,5 +226,12 @@
             >
         </TextView>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/button_package"
+        android:text="数据抓包"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.example.firewall.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.example.firewall.adapter.CommunicateAdapter;
 import com.example.firewall.bean.InterceptPhoneInfo;
 import com.example.firewall.dao.InterceptDao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +30,7 @@ import java.util.List;
 public class CommunicateActivity extends AppCompatActivity {
     private List<InterceptPhoneInfo> infos;
     private InterceptDao dao;
+    private CommunicateAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +38,14 @@ public class CommunicateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_communicate);
 
         Toolbar toolbar = findViewById(R.id.tool_bar_communicate);
-        toolbar.setNavigationOnClickListener(v -> finish());
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         ////数据从SQLite获取
         dao = new InterceptDao(this);
-        infos = dao.getAll();
+        infos = new ArrayList<>();
+        if (dao.getAll() != null)
+            infos.addAll(dao.getAll());
 
         TextView textView = findViewById(R.id.text_message);
         RecyclerView recyclerView = findViewById(R.id.recycler_communicate);
@@ -53,7 +58,7 @@ public class CommunicateActivity extends AppCompatActivity {
             recyclerView.setVisibility(View.VISIBLE);
         }
 
-        CommunicateAdapter adapter = new CommunicateAdapter(infos, this);
+        adapter = new CommunicateAdapter(infos, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -70,7 +75,7 @@ public class CommunicateActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.add_number_hand:
-                InterceptDialog dialog = new InterceptDialog(this, R.style.dialog);
+                InterceptDialog dialog = new InterceptDialog(this, R.style.dialog, infos, adapter);
                 dialog.setTitle("添加名单");
                 dialog.show();
                 break;
@@ -85,7 +90,5 @@ public class CommunicateActivity extends AppCompatActivity {
         }
         return true;
     }
-
-
 
 }

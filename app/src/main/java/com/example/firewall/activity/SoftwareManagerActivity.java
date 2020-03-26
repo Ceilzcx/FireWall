@@ -1,13 +1,18 @@
 package com.example.firewall.activity;
 
+import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.firewall.R;
@@ -29,6 +35,7 @@ import com.example.firewall.base.BaseActivityUpEnableWithMenu;
 import com.example.firewall.bean.AppInfoBean;
 
 import com.example.firewall.dao.AppManagerDao;
+import com.example.firewall.util.PermissionsUtils;
 import com.stericson.RootTools.RootTools;
 
 import java.util.ArrayList;
@@ -69,9 +76,20 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        String permission = "android.permission.PACKAGE_USAGE_STATS";
+        boolean granted= this.checkCallingOrSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+        if (!granted)
+            requestReadNetworkStats();
+
         initView();
         initData();
         initEvent();
+    }
+
+    private void requestReadNetworkStats() {
+        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+        startActivity(intent);
     }
 
     /**
@@ -99,7 +117,6 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
         // 检查是否root
         root = RootTools.isRootAvailable();
 
-        // 获取身故空间
         long romFreeSpace = AppManagerDao.getRomFreeSpace();
         long sdCardFreeSpace = AppManagerDao.getSdCardFreeSpace();
 
@@ -112,6 +129,7 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
         }
 
         initDateThread = new Thread() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void run() {
                 // 获取应用信息
@@ -192,15 +210,12 @@ public class SoftwareManagerActivity extends BaseActivityUpEnableWithMenu {
             }
         });
         //设置item监听
-        lvApp.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AppInfoBean bean = (AppInfoBean) lvApp.getItemAtPosition(position);
+        lvApp.setOnItemClickListener((parent, view, position, id) -> {
+            AppInfoBean bean = (AppInfoBean) lvApp.getItemAtPosition(position);
 //                System.out.println(bean.getName());
-                Intent intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS",
-                        Uri.parse("package:" + bean.getPackageName()));
-                startActivity(intent);
-            }
+            Intent intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS",
+                    Uri.parse("package:" + bean.getPackageName()));
+            startActivity(intent);
         });
 
         // 删除包

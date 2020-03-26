@@ -10,16 +10,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firewall.R;
+import com.example.firewall.bean.InterceptPhoneInfo;
 import com.example.firewall.bean.PhoneCallLogInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PhoneCallLogAdapter extends RecyclerView.Adapter<PhoneCallLogAdapter.ViewHolder> {
 
     private List<PhoneCallLogInfo> infos;
+    private List<InterceptPhoneInfo> checkInfos;
 
     public PhoneCallLogAdapter(List<PhoneCallLogInfo> infos){
         this.infos = infos;
+        checkInfos = new ArrayList<>();
     }
 
     @NonNull
@@ -44,6 +48,24 @@ public class PhoneCallLogAdapter extends RecyclerView.Adapter<PhoneCallLogAdapte
             holder.textView_type.setText("未接");
         else
             holder.textView_type.setText("未知");
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            String number = holder.textView_number.getText().toString();
+            if (isChecked){
+                InterceptPhoneInfo checkInfo = new InterceptPhoneInfo();
+                checkInfo.setNumber(number);
+                checkInfos.add(checkInfo);
+            }else {
+                //在列表中,删除
+                int index = -1;
+                for (int i = 0; i < checkInfos.size(); i++) {
+                    if (checkInfos.get(i).getNumber().equals(number)){
+                        index = i;
+                    }
+                }
+                if (index != -1)
+                    checkInfos.remove(index);
+            }
+        });
     }
 
     @Override
@@ -64,6 +86,10 @@ public class PhoneCallLogAdapter extends RecyclerView.Adapter<PhoneCallLogAdapte
             textView_date = view.findViewById(R.id.text_phone_date);
             textView_type = view.findViewById(R.id.text_phone_type);
         }
+    }
+
+    public List<InterceptPhoneInfo> getCheckInfos() {
+        return checkInfos;
     }
 }
 

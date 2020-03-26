@@ -70,10 +70,10 @@ public class AntivirusActivity extends BaseActivityUpEnable {
     protected void initView() {
         setContentView(R.layout.activity_antivirus);
         // 绑定视图
-        ivScan = (ImageView) findViewById(R.id.iv_scan);
-        tvUseTime = (TextView) findViewById(R.id.tv_use_time);
-        llLog = (LinearLayout) findViewById(R.id.ll_log);
-        pbProgress = (ProgressBar) findViewById(R.id.pb_progress);
+        ivScan = findViewById(R.id.iv_scan);
+        tvUseTime = findViewById(R.id.tv_use_time);
+        llLog = findViewById(R.id.ll_log);
+        pbProgress = findViewById(R.id.pb_progress);
 
 
         // 开始一个旋转动画
@@ -93,12 +93,9 @@ public class AntivirusActivity extends BaseActivityUpEnable {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        useTime++;
-                        tvUseTime.setText(formatTime(useTime));
-                    }
+                runOnUiThread(() -> {
+                    useTime++;
+                    tvUseTime.setText(formatTime(useTime));
                 });
             }
         };
@@ -127,19 +124,16 @@ public class AntivirusActivity extends BaseActivityUpEnable {
                         pbProgress.setProgress(progress);
 
                         // 添加一个TextView到llLog
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // 创建TextView并添加到llLog
-                                TextView textView = new TextView(AntivirusActivity.this);
-                                textView.setText(app.getName());
-                                llLog.addView(textView, 0);
-                                // 检查是否病毒
-                                if(null != virusBean) {
-                                    // 应用为病毒
-                                    // 字体设置红色
-                                    textView.setTextColor(Color.RED);
-                                }
+                        runOnUiThread(() -> {
+                            // 创建TextView并添加到llLog
+                            TextView textView = new TextView(AntivirusActivity.this);
+                            textView.setText(app.getName());
+                            llLog.addView(textView, 0);
+                            // 检查是否病毒
+                            if(null != virusBean) {
+                                // 应用为病毒
+                                // 字体设置红色
+                                textView.setTextColor(Color.RED);
                             }
                         });
 
@@ -173,14 +167,11 @@ public class AntivirusActivity extends BaseActivityUpEnable {
      * 启动结果类
      */
     private void startResultActivity() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(AntivirusActivity.this, AntivirusResultActivity.class);
-                intent.putExtra(Constant.EXTRA_VIRUSES, viruses);
-                startActivity(intent);
-                finish();
-            }
+        runOnUiThread(() -> {
+            Intent intent = new Intent(AntivirusActivity.this, AntivirusResultActivity.class);
+            intent.putExtra(Constant.EXTRA_VIRUSES, viruses);
+            startActivity(intent);
+            finish();
         });
 
     }

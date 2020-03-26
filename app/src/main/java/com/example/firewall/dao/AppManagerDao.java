@@ -64,7 +64,6 @@ public class AppManagerDao {
         PackageManager pm = context.getPackageManager();
         //获取所有安装应用信息
         final List<ApplicationInfo> infos = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-
         // 用于计算获取大小的进度
         class CompletedCountBean {
             int completedCount;
@@ -115,24 +114,21 @@ public class AppManagerDao {
             //获取apk路径
             bean.setApkPath(info.sourceDir);
             //获取app大小
-            getAppSize(context, info.packageName,info.uid, new AppSizeInfoListener() {
-                @Override
-                public void onGetSizeInfoCompleted(AppSizeInfo sizeInfo) {
-                    //总大小=缓存+数据+应用
-                    long totalSize = sizeInfo.cacheSize + sizeInfo.codeSize + sizeInfo.dataSize;
-                    bean.setSize(totalSize);
-                    bean.setCacheSize(sizeInfo.cacheSize);
-                    // 监听器为空，不调用
-                    if(null == listener)
-                        return;
-                    synchronized (count) {
-                        count.completedCount++;
-                        //获取所以有app大小时，唤醒监听器
-                        if(count.completedCount == infos.size()) {
-                            // 停止计时器
-                            timer.cancel();
-                            listener.onGetInfoCompleted(appInfos);
-                        }
+            getAppSize(context, info.packageName,info.uid, sizeInfo -> {
+                //总大小=缓存+数据+应用
+                long totalSize = sizeInfo.cacheSize + sizeInfo.codeSize + sizeInfo.dataSize;
+                bean.setSize(totalSize);
+                bean.setCacheSize(sizeInfo.cacheSize);
+                // 监听器为空，不调用
+                if(null == listener)
+                    return;
+                synchronized (count) {
+                    count.completedCount++;
+                    //获取所以有app大小时，唤醒监听器
+                    if(count.completedCount == infos.size()) {
+                        // 停止计时器
+                        timer.cancel();
+                        listener.onGetInfoCompleted(appInfos);
                     }
                 }
             });
@@ -158,7 +154,7 @@ public class AppManagerDao {
 
         // get pm
         final StorageStatsManager storageStatsManager = (StorageStatsManager)context.getSystemService(Context.STORAGE_STATS_SERVICE);
-        final StorageManager storageManager = (StorageManager)context.getSystemService(Context.STORAGE_SERVICE);
+        //final StorageManager storageManager = (StorageManager)context.getSystemService(Context.STORAGE_SERVICE);
         try {
             ApplicationInfo ai = context.getPackageManager().getApplicationInfo(packageName, 0);
             assert storageStatsManager != null;
@@ -168,40 +164,7 @@ public class AppManagerDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        /*PackageManager pm = context.getPackageManager();
-        Method getPackageSizeInfo = null;
-        try {
-            // 获取包大小信息的方法
-            getPackageSizeInfo = pm.getClass().getMethod("getPackageSizeInfo",
-                    String.class, IPackageStatsObserver.class);
 
-            // 调用方法
-            getPackageSizeInfo.invoke(pm, packageName,
-                    new IPackageStatsObserver.Stub() {
-                        @Override
-                        public void onGetStatsCompleted(PackageStats pStats, boolean succeeded) {
-                            //调用监听器
-                            if (succeeded)
-                                listener.onGetSizeInfoCompleted(
-                                        new AppSizeInfo(pStats.cacheSize, pStats.dataSize, pStats.codeSize));
-
-                        }
-                    });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
-    }
-
-    //申请使用权限
-    public static void requestAppUsagePermission(Context context) {
-        Intent intent = new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        try {
-            context.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

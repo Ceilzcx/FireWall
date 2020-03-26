@@ -75,11 +75,11 @@ public class ProcessManagerActivity extends BaseActivityUpEnableWithMenu {
     protected void initView() {
         setContentView(R.layout.activity_process_manager);
         // bind view
-        tvTotalMemory = (TextView) findViewById(R.id.tv_total_memory);
-        tvFreeMemory = (TextView) findViewById(R.id.tv_free_memory);
-        tvTypeLabel = (TextView) findViewById(R.id.tv_type_label);
-        lvApp = (ListView) findViewById(R.id.lv_app);
-        pbLoading = (ProgressBar) findViewById(R.id.pb_loading);
+        tvTotalMemory = findViewById(R.id.tv_total_memory);
+        tvFreeMemory = findViewById(R.id.tv_free_memory);
+        tvTypeLabel = findViewById(R.id.tv_type_label);
+        lvApp = findViewById(R.id.lv_app);
+        pbLoading = findViewById(R.id.pb_loading);
         // set adapter
         lvApp.setAdapter(adapter);
     }
@@ -123,28 +123,25 @@ public class ProcessManagerActivity extends BaseActivityUpEnableWithMenu {
      */
     private void initAppsInfo(final List<ProcessInfo> infos) {
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //清空
-                userApps.clear();
-                systemApps.clear();
-                checkeds.clear();
+        runOnUiThread(() -> {
+            //清空
+            userApps.clear();
+            systemApps.clear();
+            checkeds.clear();
 
-                for (ProcessInfo info : infos) {
-                    if (info.isSystemApp()) {
-                        systemApps.add(info);
-                    } else {
-                        userApps.add(info);
-                    }
-                    checkeds.add(false);
+            for (ProcessInfo info : infos) {
+                if (info.isSystemApp()) {
+                    systemApps.add(info);
+                } else {
+                    userApps.add(info);
                 }
-
                 checkeds.add(false);
-                checkeds.add(false);
-
-                onDataChanged();
             }
+
+            checkeds.add(false);
+            checkeds.add(false);
+
+            onDataChanged();
         });
     }
 
@@ -187,15 +184,12 @@ public class ProcessManagerActivity extends BaseActivityUpEnableWithMenu {
             }
         });
         // set on click listener
-        lvApp.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ProcessInfo bean = (ProcessInfo) lvApp.getItemAtPosition(position);
+        lvApp.setOnItemClickListener((parent, view, position, id) -> {
+            ProcessInfo bean = (ProcessInfo) lvApp.getItemAtPosition(position);
 //                System.out.println(bean.getName());
-                Intent intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS",
-                        Uri.parse("package:" + bean.getPackageName()));
-                startActivity(intent);
-            }
+            Intent intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS",
+                    Uri.parse("package:" + bean.getPackageName()));
+            startActivity(intent);
         });
     }
 
@@ -304,12 +298,7 @@ public class ProcessManagerActivity extends BaseActivityUpEnableWithMenu {
         new AlertDialog.Builder(ProcessManagerActivity.this)
                 .setTitle(R.string.tips)
                 .setMessage(R.string.message_kill_process)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        killSelectedProcesses();
-                    }
-                })
+                .setPositiveButton(R.string.ok, (dialog, which) -> killSelectedProcesses())
                 .setNegativeButton(R.string.cancel, null)
                 .show();
     }
@@ -408,17 +397,20 @@ public class ProcessManagerActivity extends BaseActivityUpEnableWithMenu {
             // set value
             item.ivIcon.setImageDrawable(bean.getIcon());
             item.tvTitle.setText(bean.getAppName());
-            item.tvSize.setText(Formatter.formatFileSize(context, bean.getMemory()));
+            long time = bean.getMemory();
+            if (time < 60000)
+                item.tvSize.setText(time / 1000 + "秒");
+            else if (time < 3600000)
+                item.tvSize.setText(time/60000 + "分" + (time/1000) % 60 + "秒");
+            else
+                item.tvSize.setText(time/3600000 + "小时" + (time/60000) % 60 + "分" + (time/1000) % 60 + "秒");
 
             item.cb.setChecked(checkeds.get(position));// update checked
             // set checkbox listener, can't use checked change event, it would effect setChecked
-            item.cb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CheckBox cb = (CheckBox) v;
-                    checkeds.set(position, cb.isChecked());
-                    System.out.println("position:" + position + " isChecked:" + cb.isChecked());
-                }
+            item.cb.setOnClickListener(v -> {
+                CheckBox cb = (CheckBox) v;
+                checkeds.set(position, cb.isChecked());
+                System.out.println("position:" + position + " isChecked:" + cb.isChecked());
             });
 
             return view;

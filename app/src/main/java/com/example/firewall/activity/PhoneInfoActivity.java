@@ -78,10 +78,6 @@ public class PhoneInfoActivity extends AppCompatActivity {
         infos.add("固件："+Build.DEVICE);
 
         infos.add("");
-        String number = telephonyManager.getLine1Number();
-        if (number == null)
-            number = "N/A";
-        infos.add("手机号码："+number);   //不一定成功
         infos.add("MAC地址："+wifiManager.getConnectionInfo().getMacAddress());
         infos.add("IP地址："+ IpDao.getIPAddress(this));
     }

@@ -4,10 +4,12 @@
     <item
         android:id="@+id/image_commit"
         android:icon="@drawable/ic_commit_black"
-        android:title="确认" />
+        android:title="确认"
+        android:onClick="addInterceptNumber"/>
 
     <item
         android:id="@+id/image_back"
         android:icon="@drawable/ic_back_black"
-        android:title="返回" />
+        android:title="返回"
+        android:onClick="back"/>
 </menu>
